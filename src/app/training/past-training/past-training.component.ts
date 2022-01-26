@@ -3,6 +3,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Observable } from 'rxjs';
 import { Exercise } from '../exercise.model';
 import { TrainingService } from '../training.service';
 
@@ -13,11 +14,11 @@ import { TrainingService } from '../training.service';
 })
 export class PastTrainingComponent implements OnInit, AfterViewInit {
   completedExercises = new MatTableDataSource<Exercise>();
-  displayedColumns = ['date', 'name', 'calories', 'duration', 'state'];
+  displayedColumns = ['date', 'name', 'calories', 'duration', 'state','delete'];
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-
+  completedExercises$ = this.training.completedExercises$
 
   constructor(private training:TrainingService,
    ) { }
@@ -28,7 +29,7 @@ export class PastTrainingComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.completedExercises.data = this.training.getCompletedExercises();
+
   }
 
   doFilter(event: Event){
@@ -39,6 +40,10 @@ export class PastTrainingComponent implements OnInit, AfterViewInit {
       this.completedExercises.paginator.firstPage();
     }
 
+  }
+
+  onDeleteExercise(id:string){
+    this.training.deleteExercise(id);
   }
 
 

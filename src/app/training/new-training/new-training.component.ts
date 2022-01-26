@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { NgForm } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { Exercise } from '../exercise.model';
 import { TrainingService } from '../training.service';
 
@@ -10,18 +11,11 @@ import { TrainingService } from '../training.service';
   styleUrls: ['./new-training.component.scss']
 })
 export class NewTrainingComponent implements OnInit {
-  exercises: Exercise[] = []
-
+  exercises$ = this.training.availableExercises$
   constructor(private training: TrainingService,
     private db: AngularFirestore) { }
 
   ngOnInit(): void {
-    this.db.collection('availableExercises')
-    .valueChanges()
-    .subscribe(
-      (result) =>console.log(result)
-      );
-
   }
 
   onStartTraining(form:NgForm){

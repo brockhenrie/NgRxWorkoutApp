@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { UIService } from 'src/app/shared/ui.service';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -9,9 +10,13 @@ import { AuthService } from '../auth.service';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private auth:AuthService) { }
+  isLoading$ = this.ui.loadingStateChanged;
+
+  constructor(private auth:AuthService,
+    private ui: UIService) { }
 
   ngOnInit(): void {
+
   }
 
   onSubmit(form: NgForm){

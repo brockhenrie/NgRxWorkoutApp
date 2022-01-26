@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./sidenav-list.component.scss']
 })
 export class SidenavListComponent implements OnInit, OnDestroy {
-  isAuth = environment.auth;
+  isAuth = false;
   authSub!: Subscription;
 
   @Output() closeSidenav = new EventEmitter<void>();

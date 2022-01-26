@@ -15,7 +15,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  isAuth = environment.auth;
+  isAuth = false;
   authSub!: Subscription;
 
   @Output() sidenavToggle = new EventEmitter<void>();

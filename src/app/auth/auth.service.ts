@@ -1,59 +1,78 @@
 import { Injectable } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import { UIService } from '../shared/ui.service';
 import { AuthData } from './auth-data.model';
-import { User } from './user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private user?: User | null;
+  private isAuthenticated!:boolean;
+
+
 
   authChange = new Subject<boolean>();
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private afAuth: AngularFireAuth,
+    private snackbar: MatSnackBar,
+    private ui:UIService) { }
 
   registerUser(authData:AuthData){
-    this.user ={
-      email:authData.email,
-      userId: Math.round(Math.random() * 10000).toString()
-    };
-    this.authSuccessfully();
+    this.ui.loadingStateChanged.next(true);
+    this.afAuth.createUserWithEmailAndPassword(authData.email, authData.password)
+    .then(result=>{
+      this.ui.loadingStateChanged.next(false);
+    })
+    .catch(err=>{
+      this.ui.loadingStateChanged.next(false);
+      this.snackbar.open(err.message, undefined,{duration: 3000});
+    })
+
   }
 
   login(authData:AuthData){
-    this.user ={
-      email:authData.email,
-      userId: Math.round(Math.random() * 10000).toString()
-    };
+    this.ui.loadingStateChanged.next(true);
+    this.afAuth.signInWithEmailAndPassword(authData.email,authData.password)
+    .then(result=>{
+      this.ui.loadingStateChanged.next(false);
+    })
+    .catch(err=>{
+      this.ui.loadingStateChanged.next(false);
+      this.snackbar.open(err.message, undefined,{duration: 3000});
+    })
 
-    this.authSuccessfully();
+
 
   }
 
   logout(){
-    this.user = null;
-    this.authUnsuccessfully();
-  }
-
-  getUser() {
-    return {...this.user};
+    this.afAuth.signOut();
   }
 
   isAuth(){
-    return this.user != null;
+    return this.isAuthenticated;
   }
 
-  private authSuccessfully(){
+  initAuthListener(){
+    this.afAuth.authState.subscribe(user=>{
+      if(user){
+        this.isAuthenticated = true;
     this.authChange.next(true);
     this.router.navigate(['/training']);
+
+      }else{
+        this.isAuthenticated = false;
+    this.authChange.next(false);
+    this.router.navigate(['/login']);
+      }
+    })
   }
 
-  private authUnsuccessfully(){
-    this.authChange.next(true);
-    this.router.navigate(['/login']);
-  }
 
 
 }

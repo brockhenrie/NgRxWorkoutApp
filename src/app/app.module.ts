@@ -1,3 +1,4 @@
+import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -7,7 +8,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MaterialModule } from './material/material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { FormsModule } from '@angular/forms';
 
 import { SignupComponent } from './auth/signup/signup.component';
 import { LoginComponent } from './auth/login/login.component';
@@ -22,9 +22,9 @@ import { StopTrainingComponent } from './training/current-training/stop-training
 
 import { environment } from '../environments/environment';
 import { AngularFireModule } from '@angular/fire/compat';
-import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
-
+import { AngularFirestoreModule, USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/firestore';
+import { AngularFireAuthModule, USE_EMULATOR as USE_AUTH_EMULATOR } from '@angular/fire/compat/auth';
+import { AngularFireFunctionsModule, USE_EMULATOR as USE_FUNCTIONS_EMULATOR } from '@angular/fire/compat/functions'
 
 
 @NgModule({
@@ -50,10 +50,15 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
     FormsModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    AngularFireFunctionsModule
 
   ],
-  providers: [],
+  providers: [
+    {provide: USE_AUTH_EMULATOR, useValue: environment.useEmulators ? ['localhost',9099]: undefined},
+    {provide: USE_FIRESTORE_EMULATOR, useValue: environment.useEmulators ? ['localhost',8080]: undefined},
+    {provide: USE_FUNCTIONS_EMULATOR, useValue: environment.useEmulators ? ['localhost',9099]: undefined}
+  ],
   bootstrap: [AppComponent],
   entryComponents: [StopTrainingComponent]
 })

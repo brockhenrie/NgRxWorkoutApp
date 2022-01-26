@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  useEmulators: false,
   firebaseConfig: {
     apiKey: "AIzaSyDWs4RI2xPDexWplJ8pG0qB1JHjHvU56tg",
     authDomain: "ngrxworkoutapp.firebaseapp.com",
